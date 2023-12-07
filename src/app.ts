@@ -6,11 +6,6 @@ const fastify = Fastify({
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Declare a route
-fastify.get('/', (request, reply) => {
-  reply.send({ hello: 'world' });
-});
-
 const defaultPort = '5000';
 const { PORT } = process.env;
 const port: number = parseInt((PORT) ? PORT : defaultPort);
@@ -33,6 +28,8 @@ const connectToDB = async () => {
 };
 connectToDB();
 
+import { api } from './api';
+api(fastify);
 
 // Run the server!
 fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {

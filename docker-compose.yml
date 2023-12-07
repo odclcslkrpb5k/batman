@@ -10,6 +10,8 @@ services:
       - db
     volumes:
     - .:/usr/src/app
+    expose:
+      - "${PORT}"
 
   db:
     container_name: postgres
