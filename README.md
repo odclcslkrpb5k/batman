@@ -25,8 +25,9 @@ invalid or non-existent keys will return status `404`.
 * You can't delete the root-level thing.
 * By default, deleting a thing will move its contents to the thing's location.
   This behavior can be controlled by specifying the `move_to` option, which expects a different
-  thing_key to accept the orphaned things. Specifying a value of -1 will result in all contents of
-  the thing being deleted recursively.
+  thing_key to accept the orphaned things (subject to the `max_contents` limit for the target
+  thing's type; any additional things after this limit will be moved to the root thing).
+  Specifying a value of -1 will result in all contents of the thing being deleted recursively.
   eg; `DELETE /thing/123?move_to=-1`
 
 
