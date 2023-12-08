@@ -35,18 +35,18 @@ invalid or non-existent keys will return status `404`.
 
 ### listing contents
 
-* `contents=<number>` - return contents, depth as indicated by <number>
+* `contents=<number>` - return contents, depth as indicated by `<number>`
 * `type_is=$type_key`- return only contents with a type that is $type_key
 * `type_of=$type_key`- return contents with a type that is or descends from $type_key
 * `limit=<number>` - limit results to specified number, default is unlimited
-* `offset=<number>` - skip <number> of results
+* `offset=<number>` - skip `<number>` of results
 
 ### context
-Include one or more "context=<string>" param to add more detail to the response
+Include one or more `"context=<string>"` param to add more detail to the response
 By default only $thing_key with _no_ additional context is returned.
-Note that this applies to the thing being queried _and_ things returned from "contents=<number>"
+Note that this applies to the thing being queried _and_ things returned from `"contents=<number>"`
 
-* `context=thing` - returns the <thing> info
+* `context=thing` - returns the `<thing>` info
 * `context=attr` - return thing attributes
 * `context=type` - return expanded info for types
 * `context=audit` - returns the audit/history of the thing
