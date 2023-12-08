@@ -67,8 +67,8 @@ PUTting things in a location is subject to some rules:
 * A thing can inhabit one or more location, as determined by its type's
   `max_locations`
 * If a thing's `max_locations` is 1, PUTting it to a new location will remove
-  it any existing location
-* If a thing's `max_locations` is >1 and it already is already at this max,
+  it from any existing location
+* If a thing's `max_locations` is >1 and it already is at this max,
   more PUTs will error
 * You can't put a thing inside of a location that has a type with `max_contents=0`
 * You can't exceed a location type's `max_contents`
@@ -82,7 +82,7 @@ If you `DELETE` all of a thing's locations, it will be moved to within the root 
 * `PUT /type/<type_key>` - update an existing type
 * `DELETE /type/<type_key>` - deletes a type, any types that descend from it, and any things that have
                           that type. Things within things deleted under this case will be moved to
-                          the deleted things parents (default thing deletion behavior).
+                          the deleted thing's parents (default thing deletion behavior).
 
 ### Managing thing type attributes
 
