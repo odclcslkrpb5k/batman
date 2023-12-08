@@ -60,14 +60,18 @@ Note that this applies to the thing being queried _and_ things returned from `"c
 * `DELETE /thing/<thing_key>/location/<location_key>` - removes a thing from a location
 
 PUTting things in a location is subject to some rules:
-    * You can't put a thing in itself
-    * You can't put a thing in any of the locations that are inside of it
-    * You can't put the root thing in anything (`max_locations=0`!)
-    * A thing can inhabit one or more location, as determined by its type's `max_locations`
-    * If a thing's `max_locations` is 1, PUTting it to a new location will remove it any existing location
-    * If a thing's `max_locations` is >1 and it already is already at this max, more PUTs will error
-    * You can't put a thing inside of a location that has a type with `max_contents=0`
-    * You can't exceed a location type's `max_contents`
+
+* You can't put a thing in itself
+* You can't put a thing in any of the locations that are inside of it
+* You can't put the root thing in anything (`max_locations=0`!)
+* A thing can inhabit one or more location, as determined by its type's
+  `max_locations`
+* If a thing's `max_locations` is 1, PUTting it to a new location will remove
+  it any existing location
+* If a thing's `max_locations` is >1 and it already is already at this max,
+  more PUTs will error
+* You can't put a thing inside of a location that has a type with `max_contents=0`
+* You can't exceed a location type's `max_contents`
 
 If you `DELETE` all of a thing's locations, it will be moved to within the root thing.
 
