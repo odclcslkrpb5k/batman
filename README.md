@@ -42,14 +42,13 @@ invalid or non-existent keys will return status `404`.
 * `offset=<number>` - skip `<number>` of results
 
 ### context
-Include one or more `"context=<string>"` param to add more detail to the response
+Include one or more `"context=<string>"` param to add more detail to the response.
 By default only $thing_key with _no_ additional context is returned.
 Note that this applies to the thing being queried _and_ things returned from `"contents=<number>"`
 
 * `context=thing` - returns the `<thing>` info
 * `context=attr` - return thing attributes
 * `context=type` - return expanded info for types
-* `context=audit` - returns the audit/history of the thing
 
 * `GET /thing/1?contents=1&type_of=2&context=thing&context=attr&context=type`
 
