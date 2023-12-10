@@ -8,7 +8,8 @@ You can put things inside of other things.
 * `DELETE` returns status `200`
 
 Unless there's an error. Errors from rule violations will return status `400`. Queries referencing
-invalid or non-existent keys will return status `404`.
+invalid or non-existent keys will return status `404`. Unexpected server errors will return `500`,
+because we're not animals.
 
 ## API routes
 

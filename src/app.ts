@@ -12,16 +12,17 @@ const port: number = parseInt((PORT) ? PORT : defaultPort);
 
 import { Pool } from "pg";
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT || "5432")
+  host: process.env.POSTGRES_HOST,
+  user: process.env.POSTGRES_USER,
+  database: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  port: parseInt(process.env.PGPORT || "5432")
 });
 
 const connectToDB = async () => {
   try {
     await pool.connect();
+    console.log('Connected to DB!');
   } catch (err) {
     console.log(err);
   }
@@ -29,7 +30,7 @@ const connectToDB = async () => {
 connectToDB();
 
 import { api } from './api';
-api(fastify);
+api(fastify, pool);
 
 // Run the server!
 fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {

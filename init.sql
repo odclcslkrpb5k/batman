@@ -16,6 +16,9 @@ create index thing_type_parent_type on thing_type(parent_type);
 
 insert into thing_type (name, description, max_contents, max_locations, parent_type)
     values ('root', 'The root of the thing hierarchy', null, 0, null);
+insert into thing_type (name, description, max_contents, max_locations, parent_type)
+    values ('test', 'A test thing', 1, 1, 1);
+
 
 create table thing (
     key serial primary key,

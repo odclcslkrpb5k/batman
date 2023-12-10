@@ -1,4 +1,16 @@
 import Fastify, { FastifyInstance, FastifyRequest } from 'fastify';
+import { Pool } from "pg";
+
+interface CreateThingBodyType {
+  name: string;
+  description: string;
+  type: number;
+  attributes: string;
+};
+
+type PostThingRequest = FastifyRequest<{
+  Body: CreateThingBodyType
+}>;
 
 interface ThingRequestQueryStringType {
   move_to: number|null;
@@ -17,11 +29,26 @@ type ThingRequest = FastifyRequest<{
   Querystring: ThingRequestQueryStringType
 }>
 
-export const api = (fastify: FastifyInstance) => {
+export const api = (fastify: FastifyInstance, pool: Pool) => {
   fastify.get('/thing', (request: ThingRequest, reply) => {
     const qs = request.query;
     reply.send({ qs });
     // perform GET-THING(root)
+  });
+
+  fastify.post('/thing', async (request: PostThingRequest, reply) => {
+    const body = request.body;
+    const { name, description, type, attributes } = body;
+    // reply.send({ });
+    // create a new thing with body params with this thing as the location
+    await pool.query('insert into thing (name, description, type, attributes) VALUES ($1, $2, $3, $4) RETURNING *', [name, description, type, attributes], (err, res) => {
+      if (err) {
+        console.log(err.stack);
+        reply.status(200).send({ message: 'Error creating thing (2)', error: err.message });
+      } else {
+        reply.send(res.rows[0]);
+      }
+    });
   });
 
   fastify.get('/thing/:key', (request: ThingRequest, reply) => {
