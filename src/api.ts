@@ -41,13 +41,18 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     const { name, description, type, attributes } = body;
     // reply.send({ });
     // create a new thing with body params with this thing as the location
-    await pool.query('insert into thing (name, description, type, attributes) VALUES ($1, $2, $3, $4) RETURNING *', [name, description, type, attributes], (err, res) => {
-      if (err) {
-        console.log(err.stack);
-        reply.status(200).send({ message: 'Error creating thing (2)', error: err.message });
-      } else {
-        reply.send(res.rows[0]);
-      }
+    await new Promise<void>((resolve,reject) => {
+      pool.query('insert into thing (name, description, type_key, attributes) VALUES ($1, $2, $3, $4) RETURNING *', [name, description, type, attributes], (err, res) => {
+        if (err) {
+          console.log(err.stack);
+          reply.status(200).send({ message: 'Error creating thing (2)', error: err.message });
+          reject(err);
+        } else {
+          // console.log(res.rows[0]);
+          reply.status(201).send(res.rows[0]);
+          resolve();
+        }
+      });
     });
   });
 
