@@ -78,6 +78,11 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     // reply.send({ key });
     // perform GET-THING(key)
     const thing = await get_thing(pool, parseInt(key));
+    // return 404 if thing was not found
+    if (!thing) {
+      reply.status(404).send({ error: 'Thing not found'});
+      return;
+    }
     reply.send(thing);
   });
   fastify.post('/thing/:key', async (request: PostThingRequest, reply) => {
@@ -95,10 +100,21 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     reply.send({ key });
     // update a thing with body params
   });
-  fastify.delete('/thing/:key', (request: ThingRequest, reply) => {
+  fastify.delete('/thing/:key', async (request: ThingRequest, reply) => {
     const key = request.params.key;
-    reply.send({ key });
+    // reply.send({ key });
     // perform DELETE-THING(key)
+    const thing = await get_thing(pool, parseInt(key));
+    if (!thing) {
+      reply.status(404).send({ error: 'Thing not found'});
+      return;
+    }
+    // delete the thing in the database
+    const res = await pool.query('delete from thing where key = $1', [thing.key]).catch((err) => {
+          reply.status(500).send({ error: 'Error deleting thing', message: err});
+      return;
+    });
+    reply.status(200).send(thing);
   });
 
   fastify.get('/thing/:key/location', (request: ThingRequest, reply) => {
