@@ -78,10 +78,12 @@ If you `DELETE` all of a thing's locations, it will be moved to within the root 
 
 ### Managing thing types
 
+* `GET /type` - returns a list of types
 * `GET /type/<type_key>` - return the info for a given type
 * `POST /type` - add a new type
 * `PUT /type/<type_key>` - update an existing type
-* `DELETE /type/<type_key>` - deletes a type, any types that descend from it, and any things that have
+* `DELETE /type/<type_key>` - deletes a type, any types that descend from it,
+                          and any things that have
                           that type. Things within things deleted under this case will be moved to
                           the deleted thing's parents (default thing deletion behavior).
 
@@ -90,7 +92,8 @@ If you `DELETE` all of a thing's locations, it will be moved to within the root 
 * `GET /attr_type/<attr_type_key>` - return info for a given attr_type
 * `POST /attr_type` - add a new attr_type
 * `PUT /attr_type/<attr_type_key>` - update an existing attr_type
-* `DELETE /attr_type/<attr_type_key>` - deletes an attribute type. Things with the relevant type will
+* `DELETE /attr_type/<attr_type_key>` - deletes an attribute type.
+                                    Things with the relevant type will
                                     have their attributes scrubbed of the deleted attribute.
 
 

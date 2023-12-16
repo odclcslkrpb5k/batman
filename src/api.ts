@@ -123,4 +123,23 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     // perform GET-LOCATION(key)
   });
 
+  // REST API handlers for thing types
+  fastify.get('/thing_type', (request, reply) => {
+    reply.send({ hello: 'world' });
+  });
+  fastify.get('/thing_type/:key', (request, reply) => {
+    // const key = request.params.key;
+    reply.send({ hello: 'world' });
+  });
+  fastify.post('/thing_type', (request, reply) => {
+    reply.send({ hello: 'world' });
+  });
+  fastify.put('/thing_type/:key', (request, reply) => {
+    reply.send({ hello: 'world' });
+  });
+  fastify.delete('/thing_type/:key', (request, reply) => {
+    reply.send({ hello: 'world' });
+  });
+
+
 };
