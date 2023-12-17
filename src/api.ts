@@ -9,7 +9,7 @@ interface CreateThingBodyType {
 };
 
 interface ThingRequestKeyType {
-  key: string;
+  key: number;
 };
 
 type PostThingRequest = FastifyRequest<{
@@ -77,7 +77,7 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     const { limit } = request.query;
     // reply.send({ key });
     // perform GET-THING(key)
-    const thing = await get_thing(pool, parseInt(key));
+    const thing = await get_thing(pool, key);
     // return 404 if thing was not found
     if (!thing) {
       reply.status(404).send({ error: 'Thing not found'});
@@ -92,7 +92,7 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     const body = request.body;
     const { name, description, type, attributes } = body;
     // create a new thing with body params with this thing as the location
-    const newThing = await create_thing(pool, name, description, type, attributes, parseInt(key));
+    const newThing = await create_thing(pool, name, description, type, attributes, key);
     reply.status(201).send(newThing);
   });
   fastify.put('/thing/:key', (request: ThingRequest, reply) => {
@@ -104,7 +104,7 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     const key = request.params.key;
     // reply.send({ key });
     // perform DELETE-THING(key)
-    const thing = await get_thing(pool, parseInt(key));
+    const thing = await get_thing(pool, key);
     if (!thing) {
       reply.status(404).send({ error: 'Thing not found'});
       return;
@@ -117,10 +117,56 @@ export const api = (fastify: FastifyInstance, pool: Pool) => {
     reply.status(200).send(thing);
   });
 
-  fastify.get('/thing/:key/location', (request: ThingRequest, reply) => {
+  fastify.get('/thing/:key/location', async (request: ThingRequest, reply) => {
     const key = request.params.key;
-    reply.send({ key });
+    // reply.send({ key });
     // perform GET-LOCATION(key)
+    const thing = await get_thing(pool, key);
+    if (!thing) {
+      reply.status(404).send({ error: 'Thing not found'});
+      return;
+    }
+    const res = await pool.query('select location_key from thing_location where thing_key = $1', [thing.key]);
+    reply.status(200).send(res.rows.reduce((acc, row) => { acc.push(row.location_key); return acc; }, []));
+  });
+
+  interface ThingLocationPutKeyType {
+    key: number;
+    location_key: number;
+  };
+  
+  type PutThingLocationRequest = FastifyRequest<{
+    Params: ThingLocationPutKeyType
+  }>;
+  
+
+  fastify.put('/thing/:key/location/:location_key', async (request: PutThingLocationRequest, reply) => {
+    const key = request.params.key;
+    const location_key = request.params.location_key;
+    // reply.send({ key });
+    // perform POST-LOCATION(key)
+    const thing = await get_thing(pool, key);
+    if (!thing) {
+      reply.status(404).send({ error: 'Thing not found'});
+      return;
+    }
+
+    const res = await pool.query('insert into thing_location (thing_key, location_key) VALUES ($1, $2) RETURNING *', [thing.key, location_key]);
+    reply.status(204);
+  });
+  // handle thing location deletion
+  fastify.delete('/thing/:key/location/:location_key', async (request: PutThingLocationRequest, reply) => {
+    const key = request.params.key;
+    const location_key = request.params.location_key;
+    // reply.send({ key });
+    // perform DELETE-LOCATION(key)
+    const thing = await get_thing(pool, key);
+    if (!thing) {
+      reply.status(404).send({ error: 'Thing not found'});
+      return;
+    }
+    const res = await pool.query('delete from thing_location where thing_key = $1 and location_key = $2', [thing.key, location_key]);
+    reply.status(204);
   });
 
   // REST API handlers for thing types

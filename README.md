@@ -4,7 +4,7 @@ You can put things inside of other things.
 
 * `GET` returns status `200`
 * `POST` returns status `201`
-* `PUT` returns status `200`
+* `PUT` returns status `204`
 * `DELETE` returns status `200`
 
 Unless there's an error. Errors from rule violations will return status `400`. Queries referencing
