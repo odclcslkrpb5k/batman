@@ -29,8 +29,13 @@ const connectToDB = async () => {
 };
 connectToDB();
 
-import { api } from './api';
-api(fastify, pool);
+import thing_api from './api/thing';
+import thing_type_api from './api/thing_type';
+import thing_location_api from './api/thing_location';
+thing_api(fastify, pool);
+thing_type_api(fastify, pool);
+thing_location_api(fastify, pool);
+
 
 // Run the server!
 fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {
