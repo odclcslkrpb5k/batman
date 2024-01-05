@@ -3,8 +3,10 @@ import Fastify from 'fastify';
 const fastify = Fastify({
   logger: true
 });
+import fastifyStatic from '@fastify/static';
 import dotenv from 'dotenv';
 dotenv.config();
+const path = require('node:path');
 
 const defaultPort = '5000';
 const { PORT } = process.env;
@@ -36,6 +38,18 @@ thing_api(fastify, pool);
 thing_type_api(fastify, pool);
 thing_location_api(fastify, pool);
 
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, '../src/app'),
+  prefix: '/app/', // optional: default '/'
+  // constraints: { host: 'example.com' } // optional: default {}
+  wildcard: true
+});
+
+// /usr/src/app/dist ???
+fastify.get('/app', function (req, reply) {
+  console.log(__dirname);
+  reply.sendFile('index.html', path.join(__dirname, '../src/app'));
+});
 
 // Run the server!
 fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {

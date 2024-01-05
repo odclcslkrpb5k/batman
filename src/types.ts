@@ -1,5 +1,16 @@
 import { FastifyRequest } from 'fastify';
 
+// request params for tui.Grid readData
+export interface tuiGridReadDataQueryStringType {
+  page: number|null;
+  perPage: number|null;
+  sortColumn: string|null;
+  sortAscending: boolean|null;
+};
+export type tuiGridReadDataRequest = FastifyRequest<{
+  Querystring: tuiGridReadDataQueryStringType
+}>;
+
 export interface CreateThingBodyType {
   name: string;
   description: string;

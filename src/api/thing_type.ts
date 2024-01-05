@@ -1,14 +1,65 @@
 import { FastifyInstance } from 'fastify';
 import { Pool } from 'pg';
-import { ThingTypeGetRequest, ThingTypePostRequest, ThingTypePutRequest } from '../types';
+import { ThingTypeGetRequest, ThingTypePostRequest, ThingTypePutRequest, tuiGridReadDataRequest } from '../types';
 
 const thing_type_api = (fastify: FastifyInstance, pool: Pool) => {
 
   // REST API handlers for thing types
-  fastify.get('/thing_type', async (request, reply) => {
+  fastify.get('/thing_type', async (request: tuiGridReadDataRequest, reply) => {
+    // TODO: this stuff should be generic
+    const page = request.query.page || 1;
+    const perPage = request.query.perPage || 10;
+    const sortColumn = request.query.sortColumn || 'key';
+    const sortAscending = request.query.sortAscending || true;
+
     // get all thing types
-    const res = await pool.query('select * from thing_type');
-    reply.send(res.rows);
+    // try
+    // {
+      const query = `select 
+    thing_type.key as key,
+    thing_type.name as name,
+    thing_type.description as description,
+    thing_type.max_contents as max_contents,
+    thing_type.max_locations as max_locations,
+    thing_type.parent_type as parent_type,
+    parent_type.name as parent_type_name
+from thing_type
+left join thing_type as parent_type on (thing_type.parent_type = parent_type.key)
+order by (case when $2 = 'ASC' then $1 end) ASC,
+(case when $2 = 'DESC' then $1 end) DESC
+limit $3 offset $4`;
+      const values = [
+        sortColumn,
+        sortAscending ? 'asc' : 'desc',
+        perPage,
+        (page - 1) * perPage
+      ];
+      console.log(query, values);
+      const res = await pool.query({
+        text: query, //'select * from thing_type order by $1 $2 limit $3 offset $4',
+        values: [
+          sortColumn,
+          sortAscending ? 'asc' : 'desc',
+          perPage,
+          (page - 1) * perPage
+        ]
+      });
+      reply.send({
+        result: true,
+        data: {
+          contents: res.rows,
+          pagination: {
+            page: 1,
+            totalCount: res.rows.length,
+          }
+        }
+      });
+    // } catch(e) {
+    //   reply.send({
+    //     result: false,
+    //     message: e,
+    //   })
+    // }
   });
 
   fastify.get('/thing_type/:key', async (request: ThingTypeGetRequest, reply) => {

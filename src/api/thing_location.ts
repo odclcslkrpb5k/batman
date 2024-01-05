@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { Pool } from 'pg';
 import { PutThingLocationRequest, ThingRequest } from '../types';
 import { get_thing } from './thing';
